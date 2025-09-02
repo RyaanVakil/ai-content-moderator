@@ -1,0 +1,17 @@
+# Build output
+target/
+*.jar
+
+# IDE files
+.idea/
+*.iml
+.vscode/
+
+# Log files
+*.log
+
+# Sensitive configuration - THIS IS THE MOST IMPORTANT PART
+/moderator-ai-service/src/main/resources/application.properties
+
+# Local environment files
+.env

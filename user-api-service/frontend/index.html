@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Moderator</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #6a0572; /* Deep Purple */
+            --secondary-color: #c06c84; /* Dusty Rose */
+            --background-light: #fbecec; /* Very Light Pink */
+            --text-dark: #333;
+            --text-light: #f9f9f9;
+            --approve-bg: #d4edda;
+            --approve-text: #155724;
+            --reject-bg: #f8d7da;
+            --reject-text: #721c24;
+            --border-radius: 8px;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, var(--background-light) 0%, #fff7f7 100%);
+            color: var(--text-dark);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            background-color: #fff;
+            padding: 40px;
+            border-radius: var(--border-radius);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+        }
+
+        h1 {
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        p {
+            margin-bottom: 25px;
+            line-height: 1.6;
+        }
+
+        textarea {
+            width: calc(100% - 20px); /* Account for padding */
+            height: 120px;
+            margin-bottom: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: var(--border-radius);
+            font-family: 'Poppins', sans-serif;
+            font-size: 1rem;
+            resize: vertical; /* Allow vertical resizing */
+        }
+
+        button {
+            background-color: var(--primary-color);
+            color: var(--text-light);
+            border: none;
+            padding: 12px 25px;
+            border-radius: var(--border-radius);
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            display: flex; /* Make button content align nicely */
+            align-items: center;
+            justify-content: center;
+            gap: 10px; /* Space between icon and text */
+            margin: 0 auto; /* Center the button */
+        }
+
+        button:hover {
+            background-color: var(--secondary-color);
+            transform: translateY(-2px);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        #result {
+            margin-top: 30px;
+            padding: 20px;
+            border-radius: var(--border-radius);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            min-height: 50px; /* Ensure consistent height */
+        }
+
+        .approve {
+            background-color: var(--approve-bg);
+            color: var(--approve-text);
+            border: 1px solid #c3e6cb;
+        }
+
+        .reject {
+            background-color: var(--reject-bg);
+            color: var(--reject-text);
+            border: 1px solid #f5c6cb;
+        }
+
+        .loading-spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-left-color: var(--primary-color);
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1><i class="fas fa-robot"></i> AI Moderator</h1>
+        <p>Type your message below. Our AI will check if it's suitable for publishing!</p>
+        <textarea id="commentText" placeholder="Start typing your amazing message here..."></textarea>
+        <button onclick="moderateComment()"><i class="fas fa-check-circle"></i> Check Message</button>
+        <div id="result"></div>
+    </div>
+
+    <script>
+        // !!! IMPORTANT: Use your LOCAL user-api-service URL for local testing !!!
+        // Once deployed to the cloud, change this to your Cloud Run URL.
+        const apiUrl = 'https://user-api-service-929182564488.asia-south1.run.app/api/v1/comment'; // Make sure this matches your local port!
+
+        async function moderateComment() {
+            const text = document.getElementById('commentText').value;
+            const resultDiv = document.getElementById('result');
+            
+            // Clear previous result and show loading spinner
+            resultDiv.innerHTML = '<div class="loading-spinner"></div> Checking...';
+            resultDiv.className = ''; // Clear previous styling
+
+            if (!text.trim()) {
+                resultDiv.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Please enter some text!';
+                resultDiv.className = 'reject'; // Use reject style for warnings too
+                return;
+            }
+
+            try {
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username: 'webapp', text: text })
+                });
+
+                if (!response.ok) { // Check if the API call itself was successful (e.g., 200 OK)
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+
+                const data = await response.json();
+
+                if (data.decision === 'APPROVE') {
+                    resultDiv.innerHTML = '<i class="fas fa-check-circle"></i> Approved: Looks good!';
+                    resultDiv.className = 'approve';
+                } else {
+                    resultDiv.innerHTML = '<i class="fas fa-times-circle"></i> Rejected: Content not suitable.';
+                    resultDiv.className = 'reject';
+                }
+
+            } catch (error) {
+                console.error("API Call Error:", error);
+                resultDiv.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Error: Could not connect to the API or server issue.';
+                resultDiv.className = 'reject';
+            }
+        }
+    </script>
+</body>
+</html>
