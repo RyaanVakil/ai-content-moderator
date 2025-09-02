@@ -2,7 +2,7 @@
 
 This project is a fully functional, cloud-native application designed to automatically moderate user-submitted text in real-time. It uses a microservice architecture built with Java and Spring Boot, integrates with Google's Natural Language AI for intelligent analysis, and is containerized with Docker for seamless deployment on Google Cloud Run.
 
-**Live Demo:** `[INSERT YOUR DEPLOYED FRONTEND URL HERE]`
+**Live Demo:** `[https://frontend-service-929182564488.asia-south1.run.app]`
 
 ---
 
@@ -48,7 +48,7 @@ This project demonstrates a wide range of modern software development practices 
 ### **Running Locally**
 1.  **Clone the Repository:**
     ```bash
-    git clone [https://github.com/RyaanVakil/your-repo-name.git](https://github.com/RyaanVakil/your-repo-name.git)
+    git clone [https://github.com/RyaanVakil/ai-content-moderator.git](https://github.com/RyaanVakil/ai-content-moderator.git)
     ```
 2.  **Configure API Key:**
     * Navigate to `moderator-ai-service/src/main/resources/`.
