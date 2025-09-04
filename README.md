@@ -2,7 +2,7 @@
 
 This project is a fully functional, cloud-native application designed to automatically moderate user-submitted text in real-time. It uses a microservice architecture built with Java and Spring Boot, integrates with Google's Natural Language AI for intelligent analysis, and is containerized with Docker for seamless deployment on Google Cloud Run.
 
-**Live Demo:** `[https://frontend-service-929182564488.asia-south1.run.app]`
+**Live Demo:** *[https://frontend-service-929182564488.asia-south1.run.app]*
 
 ---
 
@@ -48,7 +48,7 @@ This project demonstrates a wide range of modern software development practices 
 ### **Running Locally**
 1.  **Clone the Repository:**
     ```bash
-    git clone [https://github.com/RyaanVakil/ai-content-moderator.git](https://github.com/RyaanVakil/ai-content-moderator.git)
+    git clone https://github.com/RyaanVakil/ai-content-moderator.git
     ```
 2.  **Configure API Key:**
     * Navigate to `moderator-ai-service/src/main/resources/`.
@@ -70,7 +70,7 @@ This project demonstrates a wide range of modern software development practices 
     * Open the `index.html` file located in `user-api-service/frontend` in your web browser. Ensure the `apiUrl` in the script points to `http://localhost:8080`.
 
 ### **Cloud Deployment**
-The application is designed for the cloud and includes `Dockerfile`s for all three services. The deployment process involves:
+The application is designed for the cloud and includes `Dockerfiles` for all three services. The deployment process involves:
 1.  Building Docker images for each service.
 2.  Pushing the images to a container registry (like Google Artifact Registry).
 3.  Deploying the images to a serverless platform (like Google Cloud Run), ensuring that API keys and inter-service URLs are configured as environment variables.
